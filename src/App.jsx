@@ -1,79 +1,69 @@
 import React, { useState } from 'react';
-import Botao from './botao';
+import Botao from './components/Botao';
 
-function TodoList() {
-  const [tarefas, setTarefas] = useState([
-    { id: 1, texto: "Estudar React", feita: false }
-  ]);
-  const [inputTexto, setInputTexto] = useState("");
+const ListaDeTarefas = () => {
+  const [tarefas, setTarefas] = useState([]);
+  const [inputValue, setInputValue] = useState('');
 
-  function adicionarTarefa() {
-    if (inputTexto.trim() === "") return;
+  const adicionarTarefa = () => {
+    if (inputValue.trim() === '') return;
 
     const novaTarefa = {
-      id: Date.now(),
-      texto: inputTexto,
+      id: Date.now(), 
+      texto: inputValue,
       feita: false
     };
 
     setTarefas([...tarefas, novaTarefa]);
-    setInputTexto(""); 
-  }
+    setInputValue(''); 
+  };
 
-  function alternarStatus(id) {
-    const listaAtualizada = tarefas.map(function(tarefa) {
+  const alternarStatus = (id) => {
+    const listaAtualizada = tarefas.map(tarefa => {
       if (tarefa.id === id) {
-        return { ...tarefa, feita: !tarefa.feita };
+        return { ...tarefa, feita: !tarefa.feita }; 
       }
-      return tarefa;
+      return tarefa; 
     });
     setTarefas(listaAtualizada);
-  }
+  };
 
-  function removerTarefa(id) {
-    const listaFiltrada = tarefas.filter(function(tarefa) {
-      return tarefa.id !== id;
-    });
+  const removerTarefa = (id) => {
+    const listaFiltrada = tarefas.filter(tarefa => tarefa.id !== id);
     setTarefas(listaFiltrada);
-  }
+  };
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Minha Lista de Tarefas</h1>
-
-      <div>
-        <input 
-          type="text" 
-          value={inputTexto} 
-          onChange={function(e) { setInputTexto(e.target.value) }}
-          placeholder="O que precisa ser feito?"
-        />
-        <Botao onClick={adicionarTarefa}>Adicionar</Botao>
-      </div>
+      <h2>Minha Lista de Tarefas</h2>
+      
+      <input 
+        type="text" 
+        value={inputValue} 
+        onChange={(e) => setInputValue(e.target.value)} 
+        placeholder="Digite uma tarefa..."
+      />
+      <Botao onClick={adicionarTarefa}>Adicionar</Botao>
 
       <ul>
-        {tarefas.map(function(tarefa) {
-          return (
-            <li key={tarefa.id} style={{ marginTop: '10px' }}>
-              <input 
-                type="checkbox" 
-                checked={tarefa.feita} 
-                onChange={function() { alternarStatus(tarefa.id) }} 
-              />
-              
-              <span style={{ textDecoration: tarefa.feita ? 'line-through' : 'none', margin: '0 10px' }}>
-                {tarefa.texto}
-              </span>
+        {tarefas.map((tarefa) => (
+          <li key={tarefa.id} style={{ marginBottom: '10px', listStyle: 'none' }}>
+            <input 
+              type="checkbox" 
+              checked={tarefa.feita} 
+              onChange={() => alternarStatus(tarefa.id)} 
+            />
+            
+            <span style={{ textDecoration: tarefa.feita ? 'line-through' : 'none', margin: '0 10px' }}>
+              {tarefa.texto}
+            </span>
 
-              <Botao onClick={function() { removerTarefa(tarefa.id) }}>
-                Remover
-              </Botao>
-            </li>
-          );
-        })}
+            <Botao onClick={() => removerTarefa(tarefa.id)}>Remover</Botao>
+          </li>
+        ))}
       </ul>
     </div>
   );
-}
+};
 
-export default TodoList;
+export default ListaDeTarefas;
